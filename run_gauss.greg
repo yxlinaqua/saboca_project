@@ -1,0 +1,95 @@
+!! run_gauss.greg
+! Last edited: 2017.02.13  (Yuxin Lin)
+
+lut black
+!define int inp 
+define char*60 mapc
+define real rms_ms
+
+!record the stiffness and minintegral used in the gaussclumps.init 
+define real s0
+define real sa
+define real sc
+define real minint
+!define real mininteg
+define integer thres
+
+let s0 &3
+let sa &4
+let sc &5
+!let mininteg &6
+let thres &6
+let minint &7
+
+ let mapc &1
+ let rms_ms &2
+ def char*60 map /global
+ let map 'mapc' 
+ image  'mapc' 
+
+! Mask out map edge
+! pol mask_refine.pol	
+! pol center.pol 
+! pol edge.pol
+pol mask_current.pol
+ 
+ mask out /blanking -10000
+! Plot image 
+ limits /rgdata 
+ extr /comp
+ set box match
+ pl /scal lin 0 rgmax 
+ box /unit s
+
+! Fake cube
+ define image a 'mapc' read
+ let dim1 a%dim[1] /new integer
+ let dim2 a%dim[2] /new integer
+ define image b[dim1,dim2,3] cube.gdf real
+ let b% a%
+ let b%blank -99999.500 1.
+ let b[2] rg /where rg.ge.0
+ let b%convert[3] 2 0 1
+ let b%unit3 km/s
+ del /var a b dim1 dim2
+
+!pause
+ sys "rm -rf cube.fits"
+ sys "rm -rf GAUSSCLUMPS_3D.list"
+ sys "rm -rf GAUSSCLUMPS_3D.out "
+ fits cube.fits from cube.gdf
+
+! Applying GAUSSCLUMPS
+  run gaussclumps.init /nowin	!/edit
+!delete the **** line to avoid errors in plotting
+$sed -i .bak "/\*/d" GAUSSCLUMPS_3D.list
+
+
+
+define character S_0*4
+define character S_A*4
+define character S_C*4
+
+let S_0 s0 /FORMAT F6.3
+let S_A sa /FORMAT F6.3
+let S_C sc /FORMAT F6.3
+
+
+! Renaming output files
+   !sys "!filename="'map'"_"'S_0'"_"'S_A'"_"'S_C'"_"'thres'"_"'minint'"test"
+   !sys "!cp GAUSSCLUMPS_3D.list  GCLRESULTS/`echo "'map'"_"'S_0'"_"'S_A'"_"'S_C'"_"'thres'"_"'minint'"test.list | sed 's/ //g'`"
+   !sys "!cp GAUSSCLUMPS_3D.out   GCLRESULTS/`echo "'map'"_"'S_0'"_"'S_A'"_"'S_C'"_"'thres'"_"'minint'"test.out | sed 's/ //g'`"
+   sys "!cp GAUSSCLUMPS_3D.list  GCLRESULTS/tex/list_out/`echo "'map'"_.list | sed 's/ //g'`"
+   sys "!cp GAUSSCLUMPS_3D.out   GCLRESULTS/tex/list_out/`echo "'map'"_.out | sed 's/ //g'`"
+
+
+! Removing and cumulating output files
+!sys "rm cube.gdf"
+!sys "rm cube.fits"
+
+
+
+! show clumps
+@ seeclumps.greg 'rms_ms' 's0' 'sa' 'sc' 'thres' 'minint'
+!pause
+!exit
