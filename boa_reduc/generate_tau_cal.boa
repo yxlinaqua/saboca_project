@@ -1,0 +1,22 @@
+ms = 0
+#for dip in other_dict['SKYDIP']:
+      #  redssky(dip.tolist())
+
+
+for scan in ((other_dict['SKYDIP'])):
+	#scan = scansf[i]
+        scan = scan.tolist()
+        redssky(scan)
+        read(scan)
+
+	tau=scanTau(scan)
+        #tau=getTau(scan)
+	scandate=data.ScanParam.DateObs
+ 	nr = len(data.ScanParam.MJD)
+	nr = nr-1
+        mjdref = (data.ScanParam.MJD[nr]+data.ScanParam.MJD[0])/2.
+ 	output = file(r'./tau_all_90_1206.dat','a')
+	output.write('%i %s %18.12f %5.3f\n' % (scan,scandate,mjdref,tau))
+	output.close()
+	#caleach = cal(scan)
+       

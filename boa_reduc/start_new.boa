@@ -1,0 +1,5 @@
+# on MCN1
+#source ~aweiss/initboa.csh
+indir('/aux/pc20179a/saboca_raw_data_three/M-090.F-0026-2012/')
+#outdir('/aux/pc20179a/saboca_raw_data_three/output/')
+execfile(os.getenv('BOA_LOCAL_SABOCA')+'/saboca.boa')

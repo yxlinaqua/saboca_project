@@ -1,0 +1,34 @@
+ms = 0
+#for calibratori, scani in calib_dict.items():
+#    #while True:
+#    for ind in scani:
+#        try:
+#            redcal(ind.tolist(),r'tau_all.dat')
+#
+#        except:
+#            pass
+
+
+
+for sourcei,scansi in sources_dict.items():
+      #if 'AG343.50' in sourcei:
+	scans = np.asarray(scansi,dtype=np.int32).tolist()
+        print scans
+	source = str(sourcei)
+        print "source info:",scans, source
+        ms0 = loop(taufile='',calfile='./calibration-modi46_1206.dat')
+        ms0.dumpMap(r'iter0.data')
+        ms = looploop(iter=10,taufile='',calfile='./calibration-modi46_1206.dat')
+        mlist=maplist(last=10)
+	movie(mlist,pause=1)#,limZ=[-1,3])
+
+        final = newRestoreData(outdir+'iter10.data')
+       
+	converge(mlist,edge=True)
+	final.smoothBy(3./3600.)
+        if len(scansi) == 1:
+	    final.writeFits(outdir+source+'singlenew.fits',overwrite=1,writeFlux=1,writeWeight=1,writeCoverage=1,writeRms=11,rmsfile=outdir+source+'single-rmsnew.fits')
+	    pause =10 
+        else:
+            final.writeFits(outdir+source+'combnew-'+str(len(scansi))+'.fits',overwrite=1,writeFlux=1,writeWeight=1,writeCoverage=1,writeRms=11,rmsfile=outdir+source+'comb-'+str(len(scansi))+'-rmsnew.fits')        
+            pause = 20

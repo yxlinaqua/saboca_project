@@ -45,14 +45,14 @@ do
             do
                 for mininteg in `cat mininte.txt`
                 do
-                    echo ${s0} ${sa} ${sc} #${mininteg}
+                echo ${s0} ${sa} ${sc} #${mininteg}
                 
 
-                    let "thres=rms_level*3" #change y value for different thresholds of n*rms
-                    for ((lv=3;lv<=3;lv=lv+3))
+                let "thres=rms_level*3" #change y value for different thresholds of n*rms
+                for ((lv=3;lv<=3;lv=lv+3))
+                do
+                    for ((li=0;li<=0;li=li+3))#
                     do
-                        for ((li=0;li<=0;li=li+3))#
-                        do
                             cp gaussclumps_orig.init gaussclumps.init
                             sed -i .bak "s/RMS\$\ 1/RMS\$\ ${rms_level}/g" run
                             thres=`awk -v "x=${rms_level}" -v y=${lv} 'BEGIN {printf "%.4f\n",x*y}'`

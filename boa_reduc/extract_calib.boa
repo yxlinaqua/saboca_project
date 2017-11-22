@@ -1,0 +1,13 @@
+timeline_calib_scans = []
+
+for calibratori, scani in calib_dict.items():
+    timeline_calib_scans = np.append(timeline_calib_scans,scani)
+timeline_calib = np.int_(sorted(timeline_calib_scans))
+for ind in timeline_calib:
+     try:
+         redcal(ind.tolist(),r'')
+         #cal(ind.tolist())
+     except:
+         pass
+
+
